@@ -53,7 +53,7 @@ If you are using [eslint-plugin-graphql](https://www.npmjs.com/package/eslint-pl
 so that they can be linted. This module exports gql as a fake tag to do this:
 
 ```typescript
-import { gql } from 'appsync-client';
+import { gql } from "appsync-client";
 
 const query = gql`query Todo(id: $id) {
         getTodo(id: $id) {
@@ -76,4 +76,4 @@ const query = gql`query Todo(id: $id) {
 
 ## Built by Skyhook
 
-This module is contributed by the team at [Skyhook](https://www.skyhookadventure.com/).
+This module is contributed by the team at [Skyhook](https://www.skyhookadventure.com/)
