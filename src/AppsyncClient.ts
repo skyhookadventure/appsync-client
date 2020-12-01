@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { parse } from "url";
+import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import createRequestObject from "./createRequestObject";
 import signRequestObject from "./signRequestObject";
 import httpsRequestPromisified from "./httpsRequestPromisified";
@@ -6,10 +8,24 @@ import httpsRequestPromisified from "./httpsRequestPromisified";
 const gql = require("fake-tag");
 
 export type AppsyncClientParams = {
-  // API url of the form https://xxxxxxxxxxxxxxxxxxxxxxxxxx.appsync-api.xx-xxxx-x.amazonaws.com/graphql
+  /**
+   * API url of the form https://xxxxxxxxxxxxxxxxxxxxxxxxxx.appsync-api.xx-xxxx-x.amazonaws.com/graphql
+   */
   apiUrl: string;
+
+  /**
+   * AWS Access Key ID
+   */
   accessKeyId?: string;
+
+  /**
+   * AWS Secret Access Key ID
+   */
   secretAccessKey?: string;
+
+  /**
+   * AWS Session Token
+   */
   sessionToken?: string;
 };
 
@@ -18,6 +34,9 @@ export type AppsyncClientQuery = {
   variables: Object;
 };
 
+/**
+ * Appsync Client
+ */
 export default class AppsyncClient {
   private host: string;
 
@@ -29,6 +48,22 @@ export default class AppsyncClient {
 
   private sessionToken: string;
 
+  /**
+   * Create an Appsync Client
+   *
+   * @example
+   * // Create a client
+   * const client = new AppsyncClient({
+   *     // Required
+   *     apiUrl: "https://xxx.appsync-api.xx-xxxx-x.amazonaws.com/graphql",
+   *     // Optional - these will default to process.env values (e.g. the IAM
+   *     // role of a Lambda)
+   *     accessKeyId: "",
+   *     secretAccessKey: "",
+   *     sessionToken: ""
+   * });
+   *
+   */
   constructor({
     apiUrl,
     accessKeyId = process.env.AWS_ACCESS_KEY_ID as string,
@@ -45,8 +80,27 @@ export default class AppsyncClient {
 
   /**
    * Request
+   *
+   * Send a query or mutation to Appsync.
+   *
+   * @example
+   * const res = await client.request({
+   *     // The typed document node query
+   *     query: TypedDocumentNodeQuery,
+   *     // Variables to replace (here we are replacing $id with "todoId")
+   *     variables: {
+   *         id: "todoId"
+   *     }
+   * );
+   *
    */
-  public request({ query, variables }: AppsyncClientQuery): Promise<Object> {
+  public request<TData = any, TVariables = Record<string, any>>({
+    query,
+    variables,
+  }: {
+    query: TypedDocumentNode<TData, TVariables>;
+    variables?: TVariables;
+  }): Promise<TData> {
     const requestObject = createRequestObject({
       host: this.host,
       path: this.path,
@@ -61,7 +115,7 @@ export default class AppsyncClient {
       sessionToken: this.sessionToken,
     });
 
-    return httpsRequestPromisified(signedRequestObject);
+    return httpsRequestPromisified(signedRequestObject) as Promise<TData>;
   }
 }
 

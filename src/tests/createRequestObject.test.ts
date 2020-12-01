@@ -1,9 +1,10 @@
 import createRequestObject from "../createRequestObject";
+import { GetTodoDocument } from "./mockQueries";
 
 const testParams = {
   host: "example.com",
   path: "/graphql",
-  query: "todo(id: $id) { task\n description }",
+  query: GetTodoDocument,
   variables: {
     id: "todoId",
   },
@@ -26,7 +27,15 @@ describe("Parameters", () => {
 
   test("Query is correctly set in JSON stringified body", () => {
     const body = JSON.parse(testResult.body);
-    expect(body.query).toBe(testParams.query);
+    expect(body.query).toMatchInlineSnapshot(`
+      "query getTodo($id: ID!) {
+        todo(id: $id) {
+          id
+          detail
+        }
+      }
+      "
+    `);
   });
 
   test("Variables are correctly set in JSON stringified body", () => {
