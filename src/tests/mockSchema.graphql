@@ -1,0 +1,12 @@
+schema {
+  query: Query
+}
+
+type Query {
+  todo(id: ID): Todo
+}
+
+type Todo {
+  id: ID!
+  detail: String!
+}
