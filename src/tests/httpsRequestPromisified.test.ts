@@ -39,16 +39,19 @@ test("400 response throws error", async () => {
 
 // Graphql error
 const graphErrorHost = "graphError.example.com";
+const erroneousResponse = {
+  errors: [{ name: "error1" }],
+};
+const errorneousBuffer = Buffer.from(JSON.stringify(erroneousResponse));
+
 nock(`https://${graphErrorHost}`)
   .post(testRequestObject.path)
-  .reply(200, {
-    errors: [{ name: "error1" }],
-  });
+  .reply(200, errorneousBuffer);
 test("400 response throws error", async () => {
   await expect(
     httpsRequestPromisified({
       ...testRequestObject,
       host: graphErrorHost,
     })
-  ).rejects.toThrow();
+  ).rejects.toThrow(errorneousBuffer.toString());
 });
