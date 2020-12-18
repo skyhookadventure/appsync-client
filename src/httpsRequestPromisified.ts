@@ -11,11 +11,12 @@ export default function httpsRequestPromisified(
       }
 
       result.on("data", (rawResponse: Buffer) => {
-        const body = JSON.parse(rawResponse.toString());
+        const responseString = rawResponse.toString();
+        const body = JSON.parse(responseString);
         if (body.data) {
           resolve(body.data);
         } else {
-          reject(new Error(body));
+          reject(new Error(responseString));
         }
       });
     });
