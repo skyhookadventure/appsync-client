@@ -16,7 +16,7 @@
   ],
   "repository": "https://github.com/skyhookadventure/appsync-client.git",
   "license": "MIT",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "main": "dist/AppsyncClient.js",
   "scripts": {
     "build": "tsc",
