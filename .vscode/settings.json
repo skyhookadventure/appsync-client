@@ -1,0 +1,17 @@
+{
+  "editor.rulers": [120],
+  "prettier.packageManager": "yarn",
+  "eslint.packageManager": "yarn",
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "eslint.options": {
+    "ignorePath": ".gitignore"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript", "typescript"]
+}

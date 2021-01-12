@@ -10,15 +10,26 @@ export default function httpsRequestPromisified(
         reject(new Error(`Error: Status Code ${result.statusCode}`));
       }
 
+      // Handle response data
       result.on("data", (rawResponse: Buffer) => {
-        const responseString = rawResponse.toString();
-        const body = JSON.parse(responseString);
-        if (body.data) {
+        const stringResponse = rawResponse.toString();
+
+        // Try to parse it
+        try {
+          const body = JSON.parse(stringResponse);
+
+          // Throw if no data (e.g. if there are just errors)
+          if (!body.data) throw Error();
+
           resolve(body.data);
-        } else {
-          reject(new Error(responseString));
+        } catch (_e) {
+          reject(Error(stringResponse));
         }
       });
+    });
+
+    httpsRequest.on("error", (e) => {
+      throw e;
     });
 
     httpsRequest.write(requestObject.body);
