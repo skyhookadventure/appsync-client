@@ -6,33 +6,36 @@ export default function httpsRequestPromisified(
 ): Promise<Object> {
   return new Promise((resolve, reject) => {
     const httpsRequest = request(requestObject, (result: any) => {
+      // Handle HTTP error codes
       if (result.statusCode !== 200) {
         reject(new Error(`Error: Status Code ${result.statusCode}`));
       }
 
-      // Handle response data
-      result.on("data", (rawResponse: Buffer) => {
-        const stringResponse = rawResponse.toString();
+      // Concatenate response data chunks
+      let rawResponseBody = "";
+      result.on("data", (chunk: Buffer) => {
+        rawResponseBody += chunk.toString();
+      });
 
-        // Try to parse it
-        try {
-          const body = JSON.parse(stringResponse);
+      result.on("end", () => {
+        // JSON parse the response body
+        const body = JSON.parse(rawResponseBody);
 
-          // Throw if no data (e.g. if there are just errors)
-          if (!body.data) throw Error();
-
-          resolve(body.data);
-        } catch (_e) {
-          reject(Error(stringResponse));
+        // Reject if no data (e.g. if there are just errors)
+        if (!body.data) {
+          reject(Error(rawResponseBody));
         }
+
+        // Resolve with just that data
+        resolve(body.data);
       });
     });
 
+    // Handle other errors
     httpsRequest.on("error", (e) => {
-      throw e;
+      reject(e);
     });
 
-    httpsRequest.write(requestObject.body);
     httpsRequest.end();
   });
 }
