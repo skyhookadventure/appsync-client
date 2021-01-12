@@ -36,6 +36,8 @@ export default function httpsRequestPromisified(
       reject(e);
     });
 
+    httpsRequest.write(requestObject.body);
+
     httpsRequest.end();
   });
 }
