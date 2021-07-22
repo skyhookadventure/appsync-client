@@ -70,6 +70,9 @@ export default class AppsyncClient {
     secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY as string,
     sessionToken = process.env.AWS_SESSION_TOKEN as string,
   }: AppsyncClientParams) {
+    if (!apiUrl || apiUrl === "") {
+      throw Error("The AppSync graphql API URL can not be undefined or empty!");
+    }
     const apiUrlParsed = parse(apiUrl);
     this.host = apiUrlParsed.host as string;
     this.path = apiUrlParsed.path as string;
