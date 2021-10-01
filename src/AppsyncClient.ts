@@ -11,7 +11,7 @@ export type AppsyncClientParams = {
   /**
    * API url of the form https://xxxxxxxxxxxxxxxxxxxxxxxxxx.appsync-api.xx-xxxx-x.amazonaws.com/graphql
    */
-  apiUrl: string;
+  apiUrl?: string;
 
   /**
    * AWS Access Key ID
