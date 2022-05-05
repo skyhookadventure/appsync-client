@@ -18,16 +18,22 @@ export default function httpsRequestPromisified(
       });
 
       result.on("end", () => {
-        // JSON parse the response body
-        const body = JSON.parse(rawResponseBody);
+        try {
+          // JSON parse the response body
+          const body = JSON.parse(rawResponseBody);
 
-        // Reject if no data (e.g. if there are just errors)
-        if (!body.data) {
+          // Reject if no data
+          if (!body.data) {
+            reject(Error(rawResponseBody));
+          }
+
+          // Resolve with just that data
+          resolve(body.data);
+        } catch (e) {
+          // Throw the full body if it isn't JSON (usually this is where a GraphQL server is responding with e.g. an
+          // error page instead of a properly formatted GraphQL error.)
           reject(Error(rawResponseBody));
         }
-
-        // Resolve with just that data
-        resolve(body.data);
       });
     });
 

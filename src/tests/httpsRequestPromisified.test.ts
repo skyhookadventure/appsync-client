@@ -51,3 +51,17 @@ it("throws with a graphql error", async () => {
     `"{\\"errors\\":[{\\"name\\":\\"error1\\"}]}"`
   );
 });
+
+it("throws with a graphql non-JSON error", async () => {
+  const graphErrorHost = "graphError.example.com";
+  nock(`https://${graphErrorHost}`)
+    .post(testRequestObject.path)
+    .reply(200, "Text error message");
+
+  await expect(
+    httpsRequestPromisified({
+      ...testRequestObject,
+      host: graphErrorHost,
+    })
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`"Text error message"`);
+});
