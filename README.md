@@ -51,7 +51,3 @@ async function getTodo() {
 | ✅         | Unit tests (Jest)            |
 | ✅         | 100% test coverage           |
 | ✅         | Github Continuous Deployment |
-
-## Built by Skyhook
-
-This module is contributed by the team at [Skyhook](https://www.skyhookadventure.com/)
